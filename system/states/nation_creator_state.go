@@ -1,0 +1,296 @@
+package states
+
+import (
+	"math/rand"
+
+	"../../system"
+	"github.com/gen2brain/raylib-go/raygui"
+	"github.com/gen2brain/raylib-go/raylib"
+)
+
+type NationCreatorState struct {
+	BackButtonPressed bool
+	// Flag stuff
+	GenNewFlag    bool
+	FlagDirChoice int
+	Flag          raylib.Texture2D
+	// Leader stuff
+	CurrentLeader int
+	Leaders       []raylib.Texture2D
+	// Country name
+	CountryName       string
+	CountryLeader     string
+	LastIdeology      string
+	EnableCommunism   bool
+	EnableNationalism bool
+	EnableDemocracy   bool
+	AnthemPlaying     bool
+	CurrentAnthem     int
+}
+
+func (state *NationCreatorState) Load() {
+
+	// Initialize variables
+	state.BackButtonPressed = false
+
+	state.Flag = raylib.LoadTextureFromImage(system.GetNewFlag(true, 4, "communism"))
+
+	state.FlagDirChoice = 0
+
+	state.GenNewFlag = false
+
+	state.CurrentLeader = 1
+
+	state.CountryName = ""
+
+	state.CountryLeader = ""
+
+	state.LastIdeology = ""
+
+	state.CurrentAnthem = 1
+
+	state.AnthemPlaying = false
+
+	state.EnableCommunism = true
+	state.EnableDemocracy = false
+	state.EnableNationalism = false
+
+	// Copying leader image and resizing it
+	state.Leaders = make([]raylib.Texture2D, 5)
+
+	for i := 0; i < len(state.Leaders); i++ {
+		image := raylib.ImageCopy(system.Leaders[i])
+		raylib.ImageResize(image, 346, 386)
+
+		state.Leaders[i] = raylib.LoadTextureFromImage(image)
+
+		raylib.UnloadImage(image)
+	}
+
+}
+
+func (state *NationCreatorState) Update() {
+
+	// Update the background animation
+	backAnim.Update()
+
+	// Go to main menu if back button pressed
+	if state.BackButtonPressed {
+		SetState("menu")
+	}
+
+	// Generate a new flag if needed
+	if state.GenNewFlag {
+		dir := false
+		if state.FlagDirChoice == 0 {
+			dir = true
+		}
+		state.Flag = raylib.LoadTextureFromImage(system.GetNewFlag(dir, 1+rand.Intn(4), state.LastIdeology))
+	}
+
+	// Leader stuff
+	if state.CurrentLeader > len(system.Leaders) {
+		state.CurrentLeader = 1
+	}
+
+	if state.CurrentLeader < 1 {
+		state.CurrentLeader = len(system.Leaders)
+	}
+
+	// Anthem stuff
+	if state.AnthemPlaying {
+		raylib.UpdateMusicStream(system.Anthems[state.CurrentAnthem-1])
+	}
+
+	// Ideology stuff
+	state.EnableCommunism = false
+	state.EnableDemocracy = false
+	state.EnableNationalism = false
+
+	switch state.LastIdeology {
+	case "communism":
+		state.EnableCommunism = true
+
+	case "nationalism":
+		state.EnableNationalism = true
+
+	case "democracy":
+		state.EnableDemocracy = true
+	}
+}
+
+func (state *NationCreatorState) Draw() {
+	// Drawing the background
+	backAnim.Draw()
+
+	// Draw the panel
+	raylib.DrawRectangleLines(10,
+		100,
+		raylib.GetScreenWidth()-20,
+		raylib.GetScreenHeight()-200,
+		raygui.LinesColor())
+
+	raylib.DrawRectangle(11,
+		101,
+		raylib.GetScreenWidth()-22,
+		raylib.GetScreenHeight()-202,
+		raylib.NewColor(128, 128, 128, 128))
+
+	// Draw the state title
+	raylib.DrawTextEx(system.FontKremlin,
+		"Nation creator",
+		raylib.NewVector2(float32((raylib.GetScreenWidth()-raylib.MeasureText("Nation creator", 96))/2), 5),
+		96,
+		2,
+		raylib.Yellow)
+
+	// Draw buttons
+
+	// Back button
+	state.BackButtonPressed = raygui.Button(raylib.NewRectangle(5,
+		raylib.GetScreenHeight()-47,
+		200,
+		45),
+		"Back")
+
+	// Draw the flag stuff
+	raylib.DrawTextEx(system.FontKremlin,
+		"Flag editor :",
+		raylib.NewVector2(20, 110),
+		20,
+		2,
+		raylib.Yellow)
+
+	raylib.DrawRectangle(20,
+		143,
+		int32(float32(state.Flag.Width)*0.35+4),
+		int32(float32(state.Flag.Height)*0.35+4),
+		raylib.Black) // Back
+
+	raylib.DrawTextureEx(state.Flag, raylib.NewVector2(22, 145), 0.0, 0.35, raylib.White)
+
+	// Vertical of Horizontal ?
+	state.FlagDirChoice = raygui.ToggleGroup(raylib.NewRectangle(22, 147+int32(float32(state.Flag.Height)*0.36), 80, 25),
+		[]string{"Vertical", "Horizontal"},
+		state.FlagDirChoice)
+
+	// Generate ?
+	state.GenNewFlag = raygui.Button(raylib.NewRectangle(22,
+		350,
+		180,
+		45),
+		"Generate")
+
+	// Country stuff
+
+	// Draw the category title
+	raylib.DrawTextEx(system.FontKremlin,
+		"Country settings :",
+		raylib.NewVector2(400, 110),
+		20,
+		2,
+		raylib.Yellow)
+
+	// Get country name
+	raylib.DrawTextEx(system.FontKremlin,
+		"Country name :",
+		raylib.NewVector2(400, 145),
+		20,
+		2,
+		raylib.White)
+
+	state.CountryName = raygui.TextBox(raylib.NewRectangle(400, 170, 350, 32), state.CountryName)
+
+	// Get the leader name
+	raylib.DrawTextEx(system.FontKremlin,
+		"Leader name :",
+		raylib.NewVector2(400, 207),
+		20,
+		2,
+		raylib.White)
+
+	state.CountryLeader = raygui.TextBox(raylib.NewRectangle(400, 232, 350, 32), state.CountryLeader)
+
+	// Get the country regime
+	if raygui.CheckBox(raylib.NewRectangle(550, 269, 20, 20), state.EnableCommunism) {
+		state.LastIdeology = "communism"
+		state.EnableDemocracy = false
+		state.EnableNationalism = false
+	}
+	if raygui.CheckBox(raylib.NewRectangle(550, 292, 20, 20), state.EnableNationalism) {
+		state.LastIdeology = "nationalism"
+		state.EnableCommunism = false
+		state.EnableDemocracy = false
+	}
+	if raygui.CheckBox(raylib.NewRectangle(550, 316, 20, 20), state.EnableDemocracy) {
+		state.LastIdeology = "democracy"
+		state.EnableCommunism = false
+		state.EnableNationalism = false
+	}
+
+	raylib.DrawTextEx(system.FontKremlin,
+		"Communism",
+		raylib.NewVector2(400, 269),
+		20,
+		2,
+		raylib.White)
+
+	raylib.DrawTextEx(system.FontKremlin,
+		"Nationalism",
+		raylib.NewVector2(400, 292),
+		20,
+		2,
+		raylib.White)
+
+	raylib.DrawTextEx(system.FontKremlin,
+		"Democracy",
+		raylib.NewVector2(400, 316),
+		20,
+		2,
+		raylib.White)
+
+	// Add the national anthem spinner
+	lastAnthem := state.CurrentAnthem
+	state.CurrentAnthem = raygui.Spinner(raylib.NewRectangle(400, 508, 350, 32), state.CurrentAnthem, 1, len(system.Anthems))
+
+	if lastAnthem != state.CurrentAnthem {
+		raylib.StopMusicStream(system.Anthems[lastAnthem-1])
+	}
+
+	if raygui.Button(raylib.NewRectangle(400,
+		550,
+		128,
+		45),
+		"Play") {
+		state.AnthemPlaying = true
+		raylib.PlayMusicStream(system.Anthems[state.CurrentAnthem-1])
+	}
+
+	if raygui.Button(raylib.NewRectangle(622,
+		550,
+		128,
+		45),
+		"Stop") {
+		state.AnthemPlaying = false
+		raylib.StopMusicStream(system.Anthems[state.CurrentAnthem-1])
+	}
+
+	// Leader stuff
+	raylib.DrawRectangle(900,
+		145,
+		350,
+		390,
+		raylib.Black) // Back
+
+	raylib.DrawTexture(state.Leaders[state.CurrentLeader-1], 902, 147, raylib.White) // Leader
+
+	state.CurrentLeader = raygui.Spinner(raylib.NewRectangle(900, 550, 350, 32), state.CurrentLeader, 0, 100)
+}
+
+func (state *NationCreatorState) Reset() {
+
+}
+
+func (state *NationCreatorState) Close() {
+
+}
