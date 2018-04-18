@@ -1,1 +1,1 @@
-# League of Nation - Golang / Raylib
+# League of Nations - Golang / Raylib
