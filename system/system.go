@@ -37,12 +37,8 @@ func Initialize() {
 		Leaders[i] = raylib.LoadImage(fmt.Sprint("res/leaders/leader_", i+1, ".png"))
 	}
 
+	// Logo stuff
 	Logos = make([]*raylib.Image, 7)
-
-	// Anthems
-	Anthems = make([]raylib.Music, 2)
-	Anthems[0] = raylib.LoadMusicStream("res/musics/anthems/ussr_anthem.ogg")
-	Anthems[1] = raylib.LoadMusicStream("res/musics/anthems/ddr_anthem.ogg")
 
 	// Fascism / Nationalism
 	Logos[0] = raylib.LoadImage("res/logos/nationalism.png")
@@ -57,6 +53,12 @@ func Initialize() {
 	// Democracy
 	Logos[6] = raylib.LoadImage("res/logos/star.png")
 
+	// Anthems
+	Anthems = make([]raylib.Music, 2)
+	Anthems[0] = raylib.LoadMusicStream("res/musics/anthems/ussr_anthem.ogg")
+	Anthems[1] = raylib.LoadMusicStream("res/musics/anthems/ddr_anthem.ogg")
+
+	// Load style
 	raygui.LoadGuiStyle("res/gui.style")
 }
 
@@ -65,6 +67,10 @@ func Close() {
 
 	for i := 0; i < len(Leaders); i++ {
 		raylib.UnloadImage(Leaders[i])
+	}
+
+	for i := 0; i < len(Logos); i++ {
+		raylib.UnloadImage(Logos[i])
 	}
 }
 

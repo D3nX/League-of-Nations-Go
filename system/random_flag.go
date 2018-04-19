@@ -8,10 +8,10 @@ import (
 
 func GetNewFlag(vertical bool, linesCount int, ideology string) *raylib.Image {
 
-	width := 720
-	height := 480
+	width := float32(720.0)
+	height := float32(480.0)
 
-	flagImage := raylib.GenImageGradientH(width, height, raylib.White, raylib.White)
+	flagImage := raylib.GenImageGradientH(int(width), int(height), raylib.White, raylib.White)
 
 	// Logo for the following ideology
 	posX := int32(0)
@@ -48,7 +48,7 @@ func GetNewFlag(vertical bool, linesCount int, ideology string) *raylib.Image {
 	// Now, generate line
 	if vertical {
 		x := float32(0)
-		addX := float32(width / linesCount)
+		addX := float32(width / float32(linesCount))
 		for i := 0; i < linesCount; i++ {
 			var color raylib.Color
 			switch int32(rand.Intn(6)) {
@@ -72,16 +72,18 @@ func GetNewFlag(vertical bool, linesCount int, ideology string) *raylib.Image {
 				break
 			}
 
-			image := raylib.GenImageGradientH(width/linesCount, height, color, color)
+			image := raylib.GenImageGradientH(int(addX), int(height), color, color)
 			raylib.ImageDraw(flagImage,
 				image,
-				raylib.NewRectangle(int32(x), 0, image.Width, image.Height),
-				raylib.NewRectangle(int32(x), 0, image.Width, image.Height))
-			x += addX
+				raylib.NewRectangle(int32(x), 0, int32(addX), image.Height),
+				raylib.NewRectangle(int32(x), 0, int32(addX), image.Height))
+			if x+addX < float32(image.Width) {
+				x += addX
+			}
 		}
 	} else {
 		y := float32(0)
-		addY := float32(height / linesCount)
+		addY := float32(height / float32(linesCount))
 		for i := 0; i < linesCount; i++ {
 			var color raylib.Color
 			switch int32(rand.Intn(6)) {
@@ -104,12 +106,15 @@ func GetNewFlag(vertical bool, linesCount int, ideology string) *raylib.Image {
 				color = raylib.Green
 				break
 			}
-			image := raylib.GenImageGradientH(width, height/linesCount, color, color)
+			image := raylib.GenImageGradientH(int(width), int(addY), color, color)
 			raylib.ImageDraw(flagImage,
 				image,
-				raylib.NewRectangle(0, int32(y), image.Width, image.Height),
-				raylib.NewRectangle(0, int32(y), image.Width, image.Height))
-			y += addY
+				raylib.NewRectangle(0, int32(y), image.Width, int32(addY)),
+				raylib.NewRectangle(0, int32(y), image.Width, int32(addY)))
+
+			if y+addY < float32(image.Height) {
+				y += addY
+			}
 		}
 	}
 

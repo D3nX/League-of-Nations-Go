@@ -9,7 +9,9 @@ import (
 )
 
 type NationCreatorState struct {
+	// Buttons
 	BackButtonPressed bool
+	PlayButtonPressed bool
 	// Flag stuff
 	GenNewFlag    bool
 	FlagDirChoice int
@@ -17,7 +19,7 @@ type NationCreatorState struct {
 	// Leader stuff
 	CurrentLeader int
 	Leaders       []raylib.Texture2D
-	// Country name
+	// Country stuff
 	CountryName       string
 	CountryLeader     string
 	LastIdeology      string
@@ -26,6 +28,7 @@ type NationCreatorState struct {
 	EnableDemocracy   bool
 	AnthemPlaying     bool
 	CurrentAnthem     int
+	CountrySize       int
 }
 
 func (state *NationCreatorState) Load() {
@@ -33,11 +36,9 @@ func (state *NationCreatorState) Load() {
 	// Initialize variables
 	state.BackButtonPressed = false
 
-	state.Flag = raylib.LoadTextureFromImage(system.GetNewFlag(true, 4, "communism"))
-
 	state.FlagDirChoice = 0
 
-	state.GenNewFlag = false
+	state.GenNewFlag = true
 
 	state.CurrentLeader = 1
 
@@ -54,6 +55,18 @@ func (state *NationCreatorState) Load() {
 	state.EnableCommunism = true
 	state.EnableDemocracy = false
 	state.EnableNationalism = false
+
+	state.CountrySize = 0
+
+	state.PlayButtonPressed = false
+
+	dir := false
+	if state.FlagDirChoice == 0 {
+		dir = true
+	}
+	image := system.GetNewFlag(dir, 1+rand.Intn(4), state.LastIdeology)
+	state.Flag = raylib.LoadTextureFromImage(image)
+	raylib.UnloadImage(image)
 
 	// Copying leader image and resizing it
 	state.Leaders = make([]raylib.Texture2D, 5)
@@ -85,7 +98,10 @@ func (state *NationCreatorState) Update() {
 		if state.FlagDirChoice == 0 {
 			dir = true
 		}
-		state.Flag = raylib.LoadTextureFromImage(system.GetNewFlag(dir, 1+rand.Intn(4), state.LastIdeology))
+		image := system.GetNewFlag(dir, 1+rand.Intn(4), state.LastIdeology)
+		raylib.UnloadTexture(state.Flag)
+		state.Flag = raylib.LoadTextureFromImage(image)
+		raylib.UnloadImage(image)
 	}
 
 	// Leader stuff
@@ -116,6 +132,13 @@ func (state *NationCreatorState) Update() {
 
 	case "democracy":
 		state.EnableDemocracy = true
+	}
+
+	// Country button stuf
+	if state.PlayButtonPressed {
+		state.AnthemPlaying = false
+		raylib.StopMusicStream(system.Anthems[state.CurrentAnthem-1])
+		SetState("game")
 	}
 }
 
@@ -153,6 +176,13 @@ func (state *NationCreatorState) Draw() {
 		45),
 		"Back")
 
+	// Play button !
+	state.PlayButtonPressed = raygui.Button(raylib.NewRectangle(raylib.GetScreenWidth()-205,
+		raylib.GetScreenHeight()-47,
+		200,
+		45),
+		"Play")
+
 	// Draw the flag stuff
 	raylib.DrawTextEx(system.FontKremlin,
 		"Flag editor :",
@@ -165,7 +195,7 @@ func (state *NationCreatorState) Draw() {
 		143,
 		int32(float32(state.Flag.Width)*0.35+4),
 		int32(float32(state.Flag.Height)*0.35+4),
-		raylib.Black) // Back
+		raylib.Black) // Border
 
 	raylib.DrawTextureEx(state.Flag, raylib.NewVector2(22, 145), 0.0, 0.35, raylib.White)
 
@@ -249,6 +279,18 @@ func (state *NationCreatorState) Draw() {
 		2,
 		raylib.White)
 
+	// Add the country size selector
+	raylib.DrawTextEx(system.FontKremlin,
+		"Country size :",
+		raylib.NewVector2(400, 346),
+		20,
+		2,
+		raylib.White)
+
+	state.CountrySize = raygui.ToggleGroup(raylib.NewRectangle(400, 370, 170, 32),
+		[]string{"Small", "Vast"},
+		state.CountrySize)
+
 	// Add the national anthem spinner
 	lastAnthem := state.CurrentAnthem
 	state.CurrentAnthem = raygui.Spinner(raylib.NewRectangle(400, 508, 350, 32), state.CurrentAnthem, 1, len(system.Anthems))
@@ -256,6 +298,13 @@ func (state *NationCreatorState) Draw() {
 	if lastAnthem != state.CurrentAnthem {
 		raylib.StopMusicStream(system.Anthems[lastAnthem-1])
 	}
+
+	raylib.DrawTextEx(system.FontKremlin,
+		"Country Anthem :",
+		raylib.NewVector2(400, 484),
+		20,
+		2,
+		raylib.White)
 
 	if raygui.Button(raylib.NewRectangle(400,
 		550,

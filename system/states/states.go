@@ -13,6 +13,7 @@ func Initialize() {
 	states["menu"] = &MenuState{}
 	states["settings"] = &SettingsState{}
 	states["nation_creator"] = &NationCreatorState{}
+	states["game"] = &GameState{}
 
 	// Initializing game states
 	for _, state := range states {
