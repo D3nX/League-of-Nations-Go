@@ -23,6 +23,9 @@ var Leaders []*raylib.Image
 var Logos []*raylib.Image
 var Anthems []raylib.Music
 
+// Gloabal and current gmae variables
+var CurrentFlag raylib.Texture2D
+
 // Global functions
 func Initialize() {
 	Closed = false

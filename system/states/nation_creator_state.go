@@ -38,7 +38,7 @@ func (state *NationCreatorState) Load() {
 
 	state.FlagDirChoice = 0
 
-	state.GenNewFlag = true
+	state.GenNewFlag = false
 
 	state.CurrentLeader = 1
 
@@ -46,7 +46,7 @@ func (state *NationCreatorState) Load() {
 
 	state.CountryLeader = ""
 
-	state.LastIdeology = ""
+	state.LastIdeology = "communism"
 
 	state.CurrentAnthem = 1
 
@@ -242,20 +242,26 @@ func (state *NationCreatorState) Draw() {
 	state.CountryLeader = raygui.TextBox(raylib.NewRectangle(400, 232, 350, 32), state.CountryLeader)
 
 	// Get the country regime
+	currentIdeology := state.LastIdeology
 	if raygui.CheckBox(raylib.NewRectangle(550, 269, 20, 20), state.EnableCommunism) {
-		state.LastIdeology = "communism"
+		currentIdeology = "communism"
 		state.EnableDemocracy = false
 		state.EnableNationalism = false
 	}
 	if raygui.CheckBox(raylib.NewRectangle(550, 292, 20, 20), state.EnableNationalism) {
-		state.LastIdeology = "nationalism"
+		currentIdeology = "nationalism"
 		state.EnableCommunism = false
 		state.EnableDemocracy = false
 	}
 	if raygui.CheckBox(raylib.NewRectangle(550, 316, 20, 20), state.EnableDemocracy) {
-		state.LastIdeology = "democracy"
+		currentIdeology = "democracy"
 		state.EnableCommunism = false
 		state.EnableNationalism = false
+	}
+
+	if state.LastIdeology != currentIdeology {
+		state.LastIdeology = currentIdeology
+		state.GenNewFlag = true
 	}
 
 	raylib.DrawTextEx(system.FontKremlin,
@@ -337,7 +343,35 @@ func (state *NationCreatorState) Draw() {
 }
 
 func (state *NationCreatorState) Reset() {
+	for _, music := range system.Anthems {
+		raylib.StopMusicStream(music)
+	}
 
+	state.BackButtonPressed = false
+
+	state.FlagDirChoice = 0
+
+	state.GenNewFlag = false
+
+	state.CurrentLeader = 1
+
+	state.CountryName = ""
+
+	state.CountryLeader = ""
+
+	state.LastIdeology = ""
+
+	state.CurrentAnthem = 1
+
+	state.AnthemPlaying = false
+
+	state.EnableCommunism = true
+	state.EnableDemocracy = false
+	state.EnableNationalism = false
+
+	state.CountrySize = 0
+
+	state.PlayButtonPressed = false
 }
 
 func (state *NationCreatorState) Close() {

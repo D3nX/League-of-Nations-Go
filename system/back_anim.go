@@ -2,7 +2,6 @@ package system
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/gen2brain/raylib-go/raylib"
 )
@@ -12,6 +11,7 @@ type BackAnim struct {
 	alpha             int16
 	currentBackground uint8
 	action            int
+	time              int
 }
 
 func (ba *BackAnim) Load() {
@@ -23,6 +23,8 @@ func (ba *BackAnim) Load() {
 
 	ba.alpha = 255
 
+	ba.time = 0
+
 	for i := 0; i < len(ba.backgrounds); i++ {
 		image := raylib.LoadImage(fmt.Sprint("res/backgrounds/bg_", i+1, ".png"))
 
@@ -32,23 +34,23 @@ func (ba *BackAnim) Load() {
 
 		raylib.UnloadImage(image)
 	}
-
-	// Launch a routine that will count time
-	go func(input *int) {
-		for true {
-			time.Sleep(time.Second) // Wait 1 sec
-			*input = 0
-			time.Sleep(time.Second * 4) // Wait 2 sec
-			*input = 1
-			time.Sleep(time.Second) // Wait 1 sec again
-			*input = 2
-		}
-	}(&ba.action)
 }
 
 func (ba *BackAnim) Update() {
 
 	// fmt.Println("action -> ", ba.action)
+
+	ba.time += 1
+
+	if ba.action != 0 {
+		if ba.time%61 == 60 {
+			ba.action++
+		}
+	} else {
+		if ba.time%(60*6+1) == 60*6 {
+			ba.action++
+		}
+	}
 
 	switch ba.action {
 	case 0:
@@ -82,4 +84,10 @@ func (ba *BackAnim) Draw() {
 	raylib.DrawTexture(ba.backgrounds[ba.currentBackground], 0, 0, raylib.White)
 	raylib.DrawRectangle(0, 0, raylib.GetScreenWidth(), raylib.GetScreenHeight(),
 		raylib.Color{R: 0, G: 0, B: 0, A: uint8(ba.alpha)})
+}
+
+func (ba *BackAnim) Close() {
+	for _, texture := range ba.backgrounds {
+		raylib.UnloadTexture(texture)
+	}
 }

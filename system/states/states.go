@@ -36,6 +36,14 @@ func Draw() {
 	states[currentState].Draw()
 }
 
+func Close() {
+	backAnim.Close()
+
+	for _, state := range states {
+		state.Close()
+	}
+}
+
 func SetState(input string) {
 	currentState = input
 	states[currentState].Reset()

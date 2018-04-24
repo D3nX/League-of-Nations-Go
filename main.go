@@ -26,14 +26,18 @@ func main() {
 
 	// Initialize global stuff
 	system.Initialize()
+	defer system.Close()
 
 	// Initialize states manager
 	states.Initialize()
+	defer states.Close()
 
 	// Log it
 	system.Log("Done !")
 
 	for !raylib.WindowShouldClose() {
+
+		// Begin drawing & clear screen
 		raylib.BeginDrawing()
 		raylib.ClearBackground(raylib.Black)
 
@@ -46,9 +50,7 @@ func main() {
 			break
 		}
 
+		// End drawing
 		raylib.EndDrawing()
 	}
-
-	// Close everything
-	system.Close()
 }
