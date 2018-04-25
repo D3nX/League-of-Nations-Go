@@ -8,6 +8,9 @@ package main
 
 // Importing all the stuff
 import (
+	"math/rand"
+	"time"
+
 	"./system"
 	"./system/states"
 	"github.com/gen2brain/raylib-go/raylib"
@@ -16,6 +19,7 @@ import (
 func main() {
 	system.Log("Initializing game...")
 
+	// Initialize raylib stuff
 	raylib.InitWindow(1280, 720, "League of Nations")
 	defer raylib.CloseWindow()
 
@@ -23,6 +27,9 @@ func main() {
 	defer raylib.CloseAudioDevice()
 
 	raylib.SetTargetFPS(60)
+
+	// Initialize random seed
+	rand.Seed(time.Now().Unix())
 
 	// Initialize global stuff
 	system.Initialize()
