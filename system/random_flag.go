@@ -75,8 +75,8 @@ func GetNewFlag(vertical bool, linesCount int, ideology string) *raylib.Image {
 			image := raylib.GenImageGradientH(int(addX), int(height), color, color)
 			raylib.ImageDraw(flagImage,
 				image,
-				raylib.NewRectangle(int32(x), 0, int32(addX), image.Height),
-				raylib.NewRectangle(int32(x), 0, int32(addX), image.Height))
+				raylib.NewRectangle(float32(x), 0, float32(addX), float32(image.Height)),
+				raylib.NewRectangle(float32(x), 0, float32(addX), float32(image.Height)))
 			if x+addX < float32(image.Width) {
 				x += addX
 			}
@@ -109,8 +109,8 @@ func GetNewFlag(vertical bool, linesCount int, ideology string) *raylib.Image {
 			image := raylib.GenImageGradientH(int(width), int(addY), color, color)
 			raylib.ImageDraw(flagImage,
 				image,
-				raylib.NewRectangle(0, int32(y), image.Width, int32(addY)),
-				raylib.NewRectangle(0, int32(y), image.Width, int32(addY)))
+				raylib.NewRectangle(0, float32(y), float32(image.Width), float32(addY)),
+				raylib.NewRectangle(0, float32(y), float32(image.Width), float32(addY)))
 
 			if y+addY < float32(image.Height) {
 				y += addY
@@ -122,8 +122,8 @@ func GetNewFlag(vertical bool, linesCount int, ideology string) *raylib.Image {
 	if logo != nil {
 		raylib.ImageDraw(flagImage,
 			logo,
-			raylib.NewRectangle(posX, posY, logo.Width, logo.Height),
-			raylib.NewRectangle(posX, posY, logo.Width, logo.Height))
+			raylib.NewRectangle(float32(posX), float32(posY), float32(logo.Width), float32(logo.Height)),
+			raylib.NewRectangle(float32(posX), float32(posY), float32(logo.Width), float32(logo.Height)))
 	}
 
 	return flagImage

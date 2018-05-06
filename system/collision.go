@@ -6,31 +6,42 @@ import (
 
 func MouseOn(position raylib.Vector2, scale float32, image *raylib.Image) bool {
 
-	bytesColor := raylib.GetImageData(image)
-
-	colors := make([][]raylib.Color, int(float32(image.Width)*scale))
-
-	for tmp := range colors {
-		colors[tmp] = make([]raylib.Color, int(float32(image.Height)*scale))
-	}
+	imageColors := raylib.GetImageData(image)
 
 	i := 0
 
-	for x := range colors {
-		for y := range colors[x] {
-
-			colors[x][y] = raylib.NewColor(bytesColor[i], bytesColor[i+1], bytesColor[i+2], bytesColor[i+3])
-
-			i += 4
-
-			if raylib.GetMousePosition().Y != position.Y+float32(y) {
-				if raylib.GetMousePosition().X != position.X+float32(x) {
-					if colors[x][y].A == 255 {
+	for y := int32(0); y < image.Height; y++ {
+		for x := int32(0); x < image.Width; x++ {
+			if raylib.GetMousePosition().X == position.X+float32(x) {
+				if raylib.GetMousePosition().Y == position.Y+float32(y) {
+					if imageColors[i].A != 0 {
 						return true
 					}
 				}
 			}
 
+			i++
+		}
+	}
+
+	return false
+}
+
+func MouseOnEx(position raylib.Vector2, scale float32, image *raylib.Image, imageColors []raylib.Color) bool {
+
+	i := 0
+
+	for y := int32(0); y < image.Height; y++ {
+		for x := int32(0); x < image.Width; x++ {
+			if raylib.GetMousePosition().X == position.X+float32(x) {
+				if raylib.GetMousePosition().Y == position.Y+float32(y) {
+					if imageColors[i].A != 0 {
+						return true
+					}
+				}
+			}
+
+			i++
 		}
 	}
 

@@ -77,7 +77,7 @@ func (state *SettingsState) Draw() {
 		raylib.White)
 
 	system.GameSettings.MusicVolume = raygui.SliderBar(
-		raylib.NewRectangle(40+raylib.MeasureText("Music Volume :", 20), 140, 200, 20),
+		raylib.NewRectangle(40+float32(raylib.MeasureText("Music Volume :", 20)), 140, 200, 20),
 		system.GameSettings.MusicVolume,
 		0,
 		100)
@@ -98,7 +98,7 @@ func (state *SettingsState) Draw() {
 		raylib.White)
 
 	system.GameSettings.SFXVolume = raygui.SliderBar(
-		raylib.NewRectangle(40+raylib.MeasureText("Music Volume :", 20), 170, 200, 20),
+		raylib.NewRectangle(40+float32(raylib.MeasureText("Music Volume :", 20)), 170, 200, 20),
 		system.GameSettings.SFXVolume,
 		0,
 		100)
@@ -107,7 +107,7 @@ func (state *SettingsState) Draw() {
 
 	// Back button
 	state.BackButtonPressed = raygui.Button(raylib.NewRectangle(5,
-		raylib.GetScreenHeight()-47,
+		float32(raylib.GetScreenHeight()-47),
 		200,
 		45),
 		"Back")

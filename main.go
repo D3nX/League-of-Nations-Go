@@ -19,6 +19,9 @@ import (
 func main() {
 	system.Log("Initializing game...")
 
+	// Disblae output
+	raylib.SetTraceLog(0)
+
 	// Initialize raylib stuff
 	raylib.InitWindow(1280, 720, "League of Nations")
 	defer raylib.CloseWindow()

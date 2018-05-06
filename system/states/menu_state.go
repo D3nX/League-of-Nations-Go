@@ -67,19 +67,19 @@ func (state *MenuState) Draw() {
 		raylib.NewColor(64, 64, 64, 255))
 
 	// Drawing the button
-	state.ButtonsClicked[0] = raygui.Button(raylib.NewRectangle((raylib.GetScreenWidth()-200)/2,
+	state.ButtonsClicked[0] = raygui.Button(raylib.NewRectangle(float32((raylib.GetScreenWidth()-200)/2),
 		250,
 		200,
 		45),
 		"New game")
 
-	state.ButtonsClicked[1] = raygui.Button(raylib.NewRectangle((raylib.GetScreenWidth()-200)/2,
+	state.ButtonsClicked[1] = raygui.Button(raylib.NewRectangle(float32((raylib.GetScreenWidth()-200)/2),
 		320,
 		200,
 		45),
 		"Settings")
 
-	state.ButtonsClicked[2] = raygui.Button(raylib.NewRectangle((raylib.GetScreenWidth()-200)/2,
+	state.ButtonsClicked[2] = raygui.Button(raylib.NewRectangle(float32((raylib.GetScreenWidth()-200)/2),
 		390,
 		200,
 		45),

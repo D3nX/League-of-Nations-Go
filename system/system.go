@@ -17,7 +17,7 @@ type Settings struct {
 const Title = "League of Nations"
 
 var Closed bool
-var FontKremlin raylib.SpriteFont
+var FontKremlin raylib.Font
 var GameSettings Settings
 var Leaders []*raylib.Image
 var Logos []*raylib.Image
@@ -29,7 +29,7 @@ var CurrentFlag raylib.Texture2D
 // Global functions
 func Initialize() {
 	Closed = false
-	FontKremlin = raylib.LoadSpriteFontEx("res/fonts/kremlin.ttf", 96, 0, nil)
+	FontKremlin = raylib.LoadFontEx("res/fonts/kremlin.ttf", 96, 0, nil)
 	GameSettings = Settings{
 		MusicVolume: 100.0,
 		SFXVolume:   100.0,
@@ -66,7 +66,7 @@ func Initialize() {
 }
 
 func Close() {
-	raylib.UnloadSpriteFont(FontKremlin)
+	raylib.UnloadFont(FontKremlin)
 
 	for i := 0; i < len(Leaders); i++ {
 		raylib.UnloadImage(Leaders[i])

@@ -172,14 +172,14 @@ func (state *NationCreatorState) Draw() {
 
 	// Back button
 	state.BackButtonPressed = raygui.Button(raylib.NewRectangle(5,
-		raylib.GetScreenHeight()-47,
+		float32(raylib.GetScreenHeight()-47),
 		200,
 		45),
 		"Back")
 
 	// Play button !
-	state.PlayButtonPressed = raygui.Button(raylib.NewRectangle(raylib.GetScreenWidth()-205,
-		raylib.GetScreenHeight()-47,
+	state.PlayButtonPressed = raygui.Button(raylib.NewRectangle(float32(raylib.GetScreenWidth()-205),
+		float32(raylib.GetScreenHeight()-47),
 		200,
 		45),
 		"Play")
@@ -201,7 +201,7 @@ func (state *NationCreatorState) Draw() {
 	raylib.DrawTextureEx(state.Flag, raylib.NewVector2(22, 145), 0.0, 0.35, raylib.White)
 
 	// Vertical of Horizontal ?
-	state.FlagDirChoice = raygui.ToggleGroup(raylib.NewRectangle(22, 147+int32(float32(state.Flag.Height)*0.36), 80, 25),
+	state.FlagDirChoice = raygui.ToggleGroup(raylib.NewRectangle(22, 147+float32(float32(state.Flag.Height)*0.36), 80, 25),
 		[]string{"Vertical", "Horizontal"},
 		state.FlagDirChoice)
 
