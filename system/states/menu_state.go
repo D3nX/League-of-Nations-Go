@@ -87,7 +87,9 @@ func (state *MenuState) Draw() {
 }
 
 func (state *MenuState) Reset() {
-
+	for i := range state.ButtonsClicked {
+		state.ButtonsClicked[i] = false
+	}
 }
 
 func (state *MenuState) Close() {

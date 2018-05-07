@@ -1,6 +1,9 @@
 package states
 
-import "../../system"
+import (
+	"../../system"
+	"github.com/gen2brain/raylib-go/raylib"
+)
 
 var currentState string
 var states map[string]State
@@ -13,6 +16,8 @@ func Initialize() {
 	states["menu"] = &MenuState{}
 	states["settings"] = &SettingsState{}
 	states["nation_creator"] = &NationCreatorState{}
+	states["country"] = &CountryState{}
+	states["loading"] = &LoadingState{}
 	states["game"] = &GameState{}
 
 	// Initializing game states
@@ -21,7 +26,7 @@ func Initialize() {
 	}
 
 	// Setting current state to menu
-	currentState = "menu"
+	currentState = "country" // "menu"
 
 	// Initialize the back anim struct
 	backAnim = system.BackAnim{}
@@ -29,6 +34,11 @@ func Initialize() {
 }
 
 func Update() {
+
+	if raylib.IsKeyDown(raylib.KeyF1) {
+		SetState("menu")
+	}
+
 	states[currentState].Update()
 }
 

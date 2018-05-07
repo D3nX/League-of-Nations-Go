@@ -139,7 +139,7 @@ func (state *NationCreatorState) Update() {
 		state.AnthemPlaying = false
 		system.CurrentFlag = state.Flag
 		raylib.StopMusicStream(system.Anthems[state.CurrentAnthem-1])
-		SetState("game")
+		SetState("country")
 	}
 }
 

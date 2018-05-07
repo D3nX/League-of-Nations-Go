@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"./system"
+	"./system/gamemap"
 	"./system/states"
 	"github.com/gen2brain/raylib-go/raylib"
 )
@@ -41,6 +42,10 @@ func main() {
 	// Initialize states manager
 	states.Initialize()
 	defer states.Close()
+
+	// Initialize the game map stuff
+	gamemap.Initialize()
+	defer gamemap.Close()
 
 	// Log it
 	system.Log("Done !")

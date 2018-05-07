@@ -22,6 +22,7 @@ var GameSettings Settings
 var Leaders []*raylib.Image
 var Logos []*raylib.Image
 var Anthems []raylib.Music
+var Screenshot raylib.Texture2D
 
 // Gloabal and current gmae variables
 var CurrentFlag raylib.Texture2D
@@ -39,6 +40,8 @@ func Initialize() {
 	for i := 0; i < len(Leaders); i++ {
 		Leaders[i] = raylib.LoadImage(fmt.Sprint("res/leaders/leader_", i+1, ".png"))
 	}
+
+	// Screenshot = nil
 
 	// Logo stuff
 	Logos = make([]*raylib.Image, 7)
