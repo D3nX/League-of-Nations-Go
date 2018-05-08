@@ -35,7 +35,7 @@ func (state *GameState) Update() {
 	}
 
 	// Updating music
-	// raylib.UpdateMusicStream(state.Music["preparing"])
+	raylib.UpdateMusicStream(state.Music["preparing"])
 
 	// Check if button clicked on one tile
 	for x := range state.Map.Tiles {
