@@ -11,15 +11,21 @@ type LoadingState struct {
 	LoadingTexturePos raylib.Vector2
 	CurrentText       string
 	Progress          float32
+	LastProgess       float32
 	Alpha             uint8
+	Music             raylib.Music
 }
 
 func (state *LoadingState) Load() {
 	state.LoadingTexture = raylib.LoadTexture("res/backgrounds/loading_screen.png")
 	state.LoadingTexturePos = raylib.NewVector2(float32(raylib.GetScreenWidth()), 0)
-	state.CurrentText = "Preparing the best army..."
+	state.CurrentText = ""
 
 	state.Alpha = 0
+
+	state.Music = raylib.LoadMusicStream("res/musics/ost/Hearts of Iron IV Soundtrack_ Retribution.ogg")
+	raylib.SetMusicLoopCount(state.Music, -1)
+	raylib.PlayMusicStream(state.Music)
 }
 
 func (state *LoadingState) Update() {
@@ -36,22 +42,49 @@ func (state *LoadingState) Update() {
 	// Updating progess bar
 	if int32(state.LoadingTexturePos.X) <= 0 {
 		if state.Progress < 1.0 {
-			state.Progress += 0.005
+			state.Progress += 0.002
 		} else {
 			state.Progress = 1.0
 		}
+
+		// And the text
+		if int32(state.Progress*100)%25 == 1 && int32(state.LastProgess*100) != int32(state.Progress*100) {
+
+			state.LastProgess = state.Progress
+
+			switch state.CurrentText {
+			case "":
+				state.CurrentText = "Preparing the best army..."
+
+			case "Preparing the best army...":
+				state.CurrentText = "Launching plane..."
+				break
+
+			case "Launching plane...":
+				state.CurrentText = "Creating next-gen Panzer..."
+				break
+
+			case "Creating next-gen Panzer...":
+				state.CurrentText = "Scaring the ennemy..."
+				break
+			}
+		}
 	}
 
-	// Darking the screen when quitting state
+	// Darking the screen & make music lower when quitting state
 	if int32(state.Progress) >= 1.0 {
 
 		if state.Alpha+3 < 255 {
 			state.Alpha += 3
+			raylib.SetMusicVolume(state.Music, float32(255-state.Alpha)/255)
 		} else {
 			SetState("game")
 		}
 
 	}
+
+	// Updating music
+	raylib.UpdateMusicStream(state.Music)
 
 }
 
@@ -103,5 +136,6 @@ func (state *LoadingState) Reset() {
 }
 
 func (state *LoadingState) Close() {
-
+	raylib.StopMusicStream(state.Music)
+	raylib.UnloadMusicStream(state.Music)
 }

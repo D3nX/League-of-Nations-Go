@@ -13,6 +13,7 @@ import (
 
 	"./system"
 	"./system/gamemap"
+	"./system/objects"
 	"./system/states"
 	"github.com/gen2brain/raylib-go/raylib"
 )
@@ -38,6 +39,10 @@ func main() {
 	// Initialize global stuff
 	system.Initialize()
 	defer system.Close()
+
+	// Initialize game object
+	objects.Initialize()
+	defer objects.Close()
 
 	// Initialize states manager
 	states.Initialize()

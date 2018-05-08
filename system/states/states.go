@@ -26,7 +26,7 @@ func Initialize() {
 	}
 
 	// Setting current state to menu
-	currentState = "country" // "menu"
+	currentState = "game"
 
 	// Initialize the back anim struct
 	backAnim = system.BackAnim{}
@@ -49,8 +49,8 @@ func Draw() {
 func Close() {
 	backAnim.Close()
 
-	for _, state := range states {
-		state.Close()
+	for i := range states {
+		states[i].Close()
 	}
 }
 

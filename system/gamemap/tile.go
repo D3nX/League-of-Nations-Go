@@ -67,3 +67,16 @@ func (tile *Tile) Draw() {
 			raylib.White)
 	}
 }
+
+func (tile *Tile) ClickedOn() bool {
+
+	if raylib.IsMouseButtonPressed(raylib.MouseLeftButton) {
+		if raylib.GetMouseX() >= int32(tile.X) && raylib.GetMouseX() <= int32(tile.X+32) {
+			if raylib.GetMouseY() >= int32(tile.Y) && raylib.GetMouseY() <= int32(tile.Y+32) {
+				return true
+			}
+		}
+	}
+
+	return false
+}
