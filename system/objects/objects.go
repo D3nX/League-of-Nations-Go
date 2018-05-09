@@ -8,6 +8,10 @@ func Initialize() {
 	BuildingTextures = make([]raylib.Texture2D, 1)
 
 	BuildingTextures[0] = raylib.LoadTexture("res/sprites/building_0.png")
+
+	TankTextures = make([]raylib.Texture2D, 1)
+
+	TankTextures[0] = raylib.LoadTexture("res/sprites/tank_0.png")
 }
 
 func Close() {
@@ -24,4 +28,15 @@ func NewBuilding(buildingType int, x, y float32) *Building {
 	building.Type = buildingType
 
 	return building
+}
+
+func NewTank(tankType int, x, y, angle float32) *Tank {
+	tank := &Tank{}
+
+	tank.X = x
+	tank.Y = y
+	tank.Angle = angle
+	tank.Type = tankType
+
+	return tank
 }

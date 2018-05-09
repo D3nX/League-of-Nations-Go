@@ -28,6 +28,13 @@ func (state *GameState) Load() {
 
 func (state *GameState) Update() {
 
+	// Temp stuff
+	// Reload map
+	if raylib.IsKeyPressed(raylib.KeyR) {
+		state.Map.Load("res/map/map.txt")
+	}
+	// End temp stuff
+
 	// Introduction dark filter & sound uppering
 	if state.Alpha-3 > 0 {
 		state.Alpha -= 3
@@ -35,7 +42,7 @@ func (state *GameState) Update() {
 	}
 
 	// Updating music
-	raylib.UpdateMusicStream(state.Music["preparing"])
+	// raylib.UpdateMusicStream(state.Music["preparing"])
 
 	// Check if button clicked on one tile
 	for x := range state.Map.Tiles {

@@ -26,7 +26,7 @@ func Initialize() {
 	}
 
 	// Setting current state to menu
-	currentState = "menu"
+	currentState = "game" // "menu"
 
 	// Initialize the back anim struct
 	backAnim = system.BackAnim{}

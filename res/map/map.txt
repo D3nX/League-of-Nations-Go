@@ -26,3 +26,10 @@ objects:
 building 0 1 1 
 building 0 8 1 
 building 0 15 1 
+# Down buildings
+building 0 1 5 
+building 0 8 5 
+building 0 15 5 
+# Now let place a tank
+tank 0 2 7 45 
+tank 0 8 7 85 

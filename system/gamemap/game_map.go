@@ -47,6 +47,8 @@ func (gm *GameMap) Load(path string) {
 
 	gm.Tiles = make([][]Tile, 0)
 
+	gm.Objects = make([]objects.Object, 0)
+
 	for _, line := range strings.Split(content, "\n") {
 		if line[0] == '#' {
 			continue
@@ -70,18 +72,29 @@ func (gm *GameMap) Load(path string) {
 		} else {
 			keywords := strings.Split(line, " ")
 
-			if len(keywords) < 4 {
-				system.Log(fmt.Sprint("Error: Too less arguments ! (Only ", len(keywords), ")"))
-				continue
-			}
-
 			switch keywords[0] {
 			case "building":
+				if len(keywords) < 4 {
+					system.Log(fmt.Sprint("Error: Too less arguments for bulding ! (Only ", len(keywords), ")"))
+					continue
+				}
 				buildingType, _ := strconv.Atoi(keywords[1])
 				x, _ := strconv.Atoi(keywords[2])
 				y, _ := strconv.Atoi(keywords[3])
 
 				gm.Objects = append(gm.Objects, objects.NewBuilding(buildingType, float32(x)*32, float32(y)*32))
+			case "tank":
+				if len(keywords) < 5 {
+					system.Log(fmt.Sprint("Error: Too less arguments tank ! (Only ", len(keywords), ")"))
+					continue
+				}
+
+				tankType, _ := strconv.Atoi(keywords[1])
+				x, _ := strconv.Atoi(keywords[2])
+				y, _ := strconv.Atoi(keywords[3])
+				angle, _ := strconv.Atoi(keywords[4])
+
+				gm.Objects = append(gm.Objects, objects.NewTank(tankType, float32(x)*32, float32(y)*32, float32(angle)))
 			}
 		}
 	}
