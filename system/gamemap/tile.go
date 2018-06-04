@@ -5,9 +5,10 @@ import (
 )
 
 type Tile struct {
-	X    float32
-	Y    float32
-	Type rune
+	X     float32
+	Y     float32
+	Model raylib.Model
+	Type  rune
 }
 
 func (tile *Tile) Draw() {
@@ -66,6 +67,9 @@ func (tile *Tile) Draw() {
 			raylib.NewVector2(tile.X, tile.Y),
 			raylib.White)
 	}
+
+	raylib.DrawModel(tile.Model, raylib.NewVector3(tile.X, tile.Y, 0), 2.0, raylib.White)
+	// raylib.DrawPlane(raylib.NewVector3(tile.X-16, tile.Y-16, 0), raylib.NewVector2(32, 32), raylib.White)
 }
 
 func (tile *Tile) ClickedOn() bool {

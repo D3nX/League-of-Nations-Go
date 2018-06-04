@@ -107,7 +107,12 @@ func (gm *GameMap) Update() {
 	}
 }
 
-func (gm *GameMap) Draw() {
+func (gm *GameMap) Draw(cam *raylib.Camera2D) {
+
+	// Render the camera
+	raylib.BeginMode2D(*cam)
+
+	// Draw tiles
 	for x := range gm.Tiles {
 		for y := range gm.Tiles[x] {
 			gm.Tiles[x][y].Draw()
@@ -117,4 +122,7 @@ func (gm *GameMap) Draw() {
 	for _, object := range gm.Objects {
 		object.Draw()
 	}
+
+	// End rendering camera
+	raylib.EndMode2D()
 }
