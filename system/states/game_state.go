@@ -60,7 +60,6 @@ func (state *GameState) Update() {
 	}
 
 	// Move camera depending mouse position
-
 	if raylib.GetMouseX() < 50 {
 		state.Camera.Target.X -= 0.3
 	}
@@ -76,6 +75,9 @@ func (state *GameState) Update() {
 	if raylib.GetMouseY() > raylib.GetScreenHeight()-50 {
 		state.Camera.Target.Y -= 0.3
 	}
+
+	// Update the game map
+	state.Map.Update()
 }
 
 func (state *GameState) Draw() {

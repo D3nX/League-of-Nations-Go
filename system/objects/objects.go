@@ -37,6 +37,7 @@ func NewTank(tankType int, x, y, angle float32) *Tank {
 	tank.Y = y
 	tank.Angle = angle
 	tank.Type = tankType
+	tank.Selected = false
 
 	return tank
 }

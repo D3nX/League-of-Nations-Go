@@ -12,31 +12,15 @@ type ClickableSprite struct {
 	Pixels   [][]raylib.Color
 }
 
-func (cp *ClickableSprite) Hover() bool {
-
-	px := raylib.GetMouseX() - int32(cp.Position.X)
-	py := raylib.GetMouseY() - int32(cp.Position.Y)
-
-	if px >= 0 && px < cp.Texture.Width {
-		if py >= 0 && py < cp.Texture.Height {
-			if cp.Pixels[px][py].A != 0 {
-				return true
-			}
-		}
-	}
-
-	return false
-}
-
-func (cp *ClickableSprite) Draw() {
-	raylib.DrawTexture(cp.Texture, int32(cp.Position.X), int32(cp.Position.Y), cp.Color)
-}
-
 func NewClickableSprite(path string) ClickableSprite {
+	tex := raylib.LoadTexture(path)
+	return NewClickableSpriteFromTexture(&tex)
+}
 
+func NewClickableSpriteFromTexture(texture *raylib.Texture2D) ClickableSprite {
 	cp := ClickableSprite{}
 
-	cp.Texture = raylib.LoadTexture(path)
+	cp.Texture = *texture
 	cp.Position = raylib.NewVector2(0, 0)
 	cp.Scale = 1.0
 	cp.Color = raylib.White
@@ -61,4 +45,24 @@ func NewClickableSprite(path string) ClickableSprite {
 	}
 
 	return cp
+}
+
+func (cp *ClickableSprite) Hover() bool {
+
+	px := raylib.GetMouseX() - int32(cp.Position.X)
+	py := raylib.GetMouseY() - int32(cp.Position.Y)
+
+	if px >= 0 && px < cp.Texture.Width {
+		if py >= 0 && py < cp.Texture.Height {
+			if cp.Pixels[px][py].A != 0 {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (cp *ClickableSprite) Draw() {
+	raylib.DrawTexture(cp.Texture, int32(cp.Position.X), int32(cp.Position.Y), cp.Color)
 }
