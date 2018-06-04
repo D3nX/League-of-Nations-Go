@@ -50,7 +50,10 @@ func (gm *GameMap) Load(path string) {
 	gm.Objects = make([]objects.Object, 0)
 
 	for _, line := range strings.Split(content, "\n") {
-		if line[0] == '#' {
+
+		if len(line) < 1 {
+
+		} else if line[0] == '#' {
 			continue
 		}
 
