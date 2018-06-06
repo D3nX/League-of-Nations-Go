@@ -1,8 +1,6 @@
 package states
 
 import (
-	"fmt"
-
 	"../gamemap"
 	"github.com/gen2brain/raylib-go/raylib"
 )
@@ -54,26 +52,31 @@ func (state *GameState) Update() {
 	for x := range state.Map.Tiles {
 		for y := range state.Map.Tiles[x] {
 			if state.Map.Tiles[x][y].ClickedOn() {
-				fmt.Println("Pressed on tile : x =", x, " y =", y)
+				// fmt.Println("Pressed on tile : x =", x, " y =", y)
 			}
 		}
 	}
 
+	// Iterate over objects
+	/*for _, obj := range state.Map.Objects {
+
+	}*/
+
 	// Move camera depending mouse position
 	if raylib.GetMouseX() < 50 {
-		state.Camera.Target.X -= 0.3
+		state.Camera.Offset.X += 5
 	}
 
 	if raylib.GetMouseX() > raylib.GetScreenWidth()-50 {
-		state.Camera.Target.X += 0.3
+		state.Camera.Offset.X -= 5
 	}
 
 	if raylib.GetMouseY() < 50 {
-		state.Camera.Target.Y += 0.3
+		state.Camera.Offset.Y += 5
 	}
 
 	if raylib.GetMouseY() > raylib.GetScreenHeight()-50 {
-		state.Camera.Target.Y -= 0.3
+		state.Camera.Offset.Y -= 5
 	}
 
 	// Update the game map

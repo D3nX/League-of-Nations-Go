@@ -112,6 +112,8 @@ func (gm *GameMap) Update() {
 
 func (gm *GameMap) Draw(cam *raylib.Camera2D) {
 
+	fmt.Println(cam.Target)
+
 	// Render the camera
 	raylib.BeginMode2D(*cam)
 

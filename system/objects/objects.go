@@ -38,6 +38,15 @@ func NewTank(tankType int, x, y, angle float32) *Tank {
 	tank.Angle = angle
 	tank.Type = tankType
 	tank.Selected = false
+	tank.AngleToGo = -1.0
+	tank.Direction = ""
+	tank.Rectangle = raylib.NewRectangle(tank.X, tank.Y, 0, 0)
+	tank.ButtonRectangles = make(map[string]*raylib.Rectangle)
+
+	tank.ButtonRectangles["right"] = &raylib.Rectangle{X: 0, Y: 0, Width: 32, Height: 32}
+	tank.ButtonRectangles["left"] = &raylib.Rectangle{X: 0, Y: 0, Width: 32, Height: 32}
+	tank.ButtonRectangles["up"] = &raylib.Rectangle{X: 0, Y: 0, Width: 32, Height: 32}
+	tank.ButtonRectangles["down"] = &raylib.Rectangle{X: 0, Y: 0, Width: 32, Height: 32}
 
 	return tank
 }
