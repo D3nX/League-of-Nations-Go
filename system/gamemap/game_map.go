@@ -112,22 +112,20 @@ func (gm *GameMap) Update() {
 
 func (gm *GameMap) Draw(cam *raylib.Camera2D) {
 
-	fmt.Println(cam.Target)
+	// fmt.Println(cam.Target)
 
-	// Render the camera
+	// Begin rendering camera
 	raylib.BeginMode2D(*cam)
-
 	// Draw tiles
 	for x := range gm.Tiles {
 		for y := range gm.Tiles[x] {
 			gm.Tiles[x][y].Draw()
 		}
 	}
-
-	for _, object := range gm.Objects {
-		object.Draw()
-	}
-
 	// End rendering camera
 	raylib.EndMode2D()
+
+	for _, object := range gm.Objects {
+		object.Draw(cam)
+	}
 }

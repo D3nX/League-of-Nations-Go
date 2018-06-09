@@ -58,25 +58,41 @@ func (state *GameState) Update() {
 	}
 
 	// Iterate over objects
-	/*for _, obj := range state.Map.Objects {
-
-	}*/
+	selectedId := int(-1)
+	for i, obj := range state.Map.Objects {
+		if obj.IsSelected() {
+			selectedId = i
+		}
+	}
 
 	// Move camera depending mouse position
-	if raylib.GetMouseX() < 50 {
-		state.Camera.Offset.X += 5
-	}
+	if selectedId == -1 {
+		goto end // temps
+		if raylib.GetMouseX() < 50 {
+			state.Camera.Offset.X += 5
+		}
 
-	if raylib.GetMouseX() > raylib.GetScreenWidth()-50 {
-		state.Camera.Offset.X -= 5
-	}
+		if raylib.GetMouseX() > raylib.GetScreenWidth()-50 {
+			state.Camera.Offset.X -= 5
+		}
 
-	if raylib.GetMouseY() < 50 {
-		state.Camera.Offset.Y += 5
-	}
+		if raylib.GetMouseY() < 50 {
+			state.Camera.Offset.Y += 5
+		}
 
-	if raylib.GetMouseY() > raylib.GetScreenHeight()-50 {
-		state.Camera.Offset.Y -= 5
+		if raylib.GetMouseY() > raylib.GetScreenHeight()-50 {
+			state.Camera.Offset.Y -= 5
+		}
+
+	end:
+	} else {
+		state.Camera.Offset = state.Map.Objects[selectedId].GetPosition()
+
+		state.Camera.Offset.X = -state.Camera.Offset.X
+		state.Camera.Offset.Y = -state.Camera.Offset.Y
+
+		state.Camera.Offset.X += float32(raylib.GetScreenWidth()) / 2
+		state.Camera.Offset.Y += float32(raylib.GetScreenHeight()) / 2
 	}
 
 	// Update the game map

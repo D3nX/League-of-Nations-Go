@@ -1,6 +1,10 @@
 package objects
 
+import "github.com/gen2brain/raylib-go/raylib"
+
 type Object interface {
 	Update()
-	Draw()
+	Draw(*raylib.Camera2D)
+	IsSelected() bool
+	GetPosition() raylib.Vector2
 }
