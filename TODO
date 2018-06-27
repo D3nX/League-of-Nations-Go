@@ -1,7 +1,8 @@
 TODO for League of Nations
 
-- Implement tank controllers -> Done 
+- Implement tank controllers : Done 
 - Implement user interface
+    -> Add button for pick tank
 - Add soldiers
 - Add soldiers group
 - Add planes

@@ -4,19 +4,22 @@ import (
 	"fmt"
 
 	"../gamemap"
+	"../objects"
+	"../objects/ui"
 	"github.com/gen2brain/raylib-go/raylib"
 )
 
 const (
-	DEBUG_UI    = false
-	DEBUG_MUSIC = false
+	DEBUG_UI    = true
+	DEBUG_MUSIC = true
 )
 
 type GameState struct {
-	Alpha  uint8
-	Map    *gamemap.GameMap
-	Music  map[string]raylib.Music
-	Camera raylib.Camera2D
+	Alpha        uint8
+	Map          *gamemap.GameMap
+	Music        map[string]raylib.Music
+	Camera       raylib.Camera2D
+	panelButtons []ui.PanelButton
 }
 
 func (state *GameState) Load() {
@@ -35,6 +38,10 @@ func (state *GameState) Load() {
 		raylib.NewVector2(float32(raylib.GetScreenWidth())/2, float32(raylib.GetScreenHeight())/2),
 		0.0,
 		1.0)
+
+	// Initialize panel button
+	state.panelButtons = make([]ui.PanelButton, 1)
+	state.panelButtons[0] = ui.NewPanelButton(5, float32(raylib.GetScreenHeight())-195, 190, 190, "12000$", &objects.TankTextures[0])
 }
 
 func (state *GameState) Update() {
@@ -143,9 +150,9 @@ func (state *GameState) Draw() {
 	raylib.DrawText(fmt.Sprint("Camera\nX : ", state.Camera.Offset.X, "\nY : ", state.Camera.Offset.Y), 5, 0, 30, raylib.White)
 	// End helper stuff
 
-	// The GUI
+	// The UI
 
-	// Drawing the pannel
+	// Drawing the panel
 	if DEBUG_UI {
 		raylib.DrawRectangle(0,
 			raylib.GetScreenHeight()-200,
@@ -158,6 +165,13 @@ func (state *GameState) Draw() {
 			raylib.GetScreenWidth()-6,
 			194,
 			raylib.Black)
+
+		// Draw the panel buttons
+		for _, b := range state.panelButtons {
+			if b.Draw() {
+				fmt.Println("It finally works comrade !")
+			}
+		}
 
 		// Drawing the filter (for un-darking screen)
 		raylib.DrawRectangle(0,
