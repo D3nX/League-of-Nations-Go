@@ -27,10 +27,13 @@ type Tank struct {
 	Rectangle raylib.Rectangle
 }
 
-func (t *Tank) Update() {
+func (t *Tank) Update(cam *raylib.Camera2D) {
 	if raylib.IsMouseButtonPressed(raylib.MouseLeftButton) {
 
 		mPos := raylib.GetMousePosition()
+
+		mPos.X -= cam.Offset.X
+		mPos.Y -= cam.Offset.Y
 
 		if mPos.X >= t.Rectangle.X && mPos.X <= t.Rectangle.X+t.Rectangle.Width {
 			if mPos.Y >= t.Rectangle.Y && mPos.Y <= t.Rectangle.Y+t.Rectangle.Height {
@@ -42,6 +45,8 @@ func (t *Tank) Update() {
 				goto end
 			}
 		}
+
+		mPos = raylib.GetMousePosition()
 
 		if t.Selected {
 			for _, c := range t.ButtonRectangles {
@@ -226,6 +231,10 @@ func (t *Tank) UpdateRectanglePosition() {
 
 func (t *Tank) IsSelected() bool {
 	return t.Selected
+}
+
+func (t *Tank) SetSelected(selected bool) {
+	t.Selected = selected
 }
 
 func (t *Tank) GetPosition() raylib.Vector2 {

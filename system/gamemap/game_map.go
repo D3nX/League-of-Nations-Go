@@ -104,9 +104,9 @@ func (gm *GameMap) Load(path string) {
 
 }
 
-func (gm *GameMap) Update() {
+func (gm *GameMap) Update(cam *raylib.Camera2D) {
 	for _, object := range gm.Objects {
-		object.Update()
+		object.Update(cam)
 	}
 }
 

@@ -1,8 +1,15 @@
 package states
 
 import (
+	"fmt"
+
 	"../gamemap"
 	"github.com/gen2brain/raylib-go/raylib"
+)
+
+const (
+	DEBUG_UI    = false
+	DEBUG_MUSIC = false
 )
 
 type GameState struct {
@@ -46,7 +53,9 @@ func (state *GameState) Update() {
 	}
 
 	// Updating music
-	// raylib.UpdateMusicStream(state.Music["preparing"])
+	if DEBUG_MUSIC {
+		raylib.UpdateMusicStream(state.Music["preparing"])
+	}
 
 	// Check if button clicked on one tile
 	for x := range state.Map.Tiles {
@@ -65,27 +74,53 @@ func (state *GameState) Update() {
 		}
 	}
 
+	if selectedId != -1 {
+		for i, obj := range state.Map.Objects {
+			if i != selectedId {
+				obj.SetSelected(false)
+			}
+		}
+	}
+
 	// Move camera depending mouse position
-	if selectedId == -1 {
-		goto end // temps
-		if raylib.GetMouseX() < 50 {
-			state.Camera.Offset.X += 5
-		}
 
-		if raylib.GetMouseX() > raylib.GetScreenWidth()-50 {
-			state.Camera.Offset.X -= 5
-		}
+	if raylib.IsKeyDown(raylib.KeyLeft) {
+		state.Camera.Offset.X += 5
 
-		if raylib.GetMouseY() < 50 {
-			state.Camera.Offset.Y += 5
+		if selectedId != -1 {
+			state.Map.Objects[selectedId].SetSelected(false)
+			selectedId = -1
 		}
+	}
 
-		if raylib.GetMouseY() > raylib.GetScreenHeight()-50 {
-			state.Camera.Offset.Y -= 5
+	if raylib.IsKeyDown(raylib.KeyRight) {
+		state.Camera.Offset.X -= 5
+
+		if selectedId != -1 {
+			state.Map.Objects[selectedId].SetSelected(false)
+			selectedId = -1
 		}
+	}
 
-	end:
-	} else {
+	if raylib.IsKeyDown(raylib.KeyUp) {
+		state.Camera.Offset.Y += 5
+
+		if selectedId != -1 {
+			state.Map.Objects[selectedId].SetSelected(false)
+			selectedId = -1
+		}
+	}
+
+	if raylib.IsKeyDown(raylib.KeyDown) {
+		state.Camera.Offset.Y -= 5
+
+		if selectedId != -1 {
+			state.Map.Objects[selectedId].SetSelected(false)
+			selectedId = -1
+		}
+	}
+
+	if selectedId != -1 {
 		state.Camera.Offset = state.Map.Objects[selectedId].GetPosition()
 
 		state.Camera.Offset.X = -state.Camera.Offset.X
@@ -96,7 +131,7 @@ func (state *GameState) Update() {
 	}
 
 	// Update the game map
-	state.Map.Update()
+	state.Map.Update(&state.Camera)
 }
 
 func (state *GameState) Draw() {
@@ -104,29 +139,33 @@ func (state *GameState) Draw() {
 	// Drawing the map
 	state.Map.Draw(&state.Camera)
 
-	return
+	// Helper
+	raylib.DrawText(fmt.Sprint("Camera\nX : ", state.Camera.Offset.X, "\nY : ", state.Camera.Offset.Y), 5, 0, 30, raylib.White)
+	// End helper stuff
 
 	// The GUI
 
 	// Drawing the pannel
-	raylib.DrawRectangle(0,
-		raylib.GetScreenHeight()-200,
-		raylib.GetScreenWidth(),
-		200,
-		raylib.White)
+	if DEBUG_UI {
+		raylib.DrawRectangle(0,
+			raylib.GetScreenHeight()-200,
+			raylib.GetScreenWidth(),
+			200,
+			raylib.White)
 
-	raylib.DrawRectangleLines(3,
-		raylib.GetScreenHeight()-197,
-		raylib.GetScreenWidth()-6,
-		194,
-		raylib.Black)
+		raylib.DrawRectangleLines(3,
+			raylib.GetScreenHeight()-197,
+			raylib.GetScreenWidth()-6,
+			194,
+			raylib.Black)
 
-	// Drawing the filter (for un-darking screen)
-	raylib.DrawRectangle(0,
-		0,
-		raylib.GetScreenWidth(),
-		raylib.GetScreenHeight(),
-		raylib.NewColor(0, 0, 0, state.Alpha))
+		// Drawing the filter (for un-darking screen)
+		raylib.DrawRectangle(0,
+			0,
+			raylib.GetScreenWidth(),
+			raylib.GetScreenHeight(),
+			raylib.NewColor(0, 0, 0, state.Alpha))
+	}
 
 	// DO NOT ADD CODE UNDER
 }
