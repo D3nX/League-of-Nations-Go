@@ -4,6 +4,11 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 )
 
+const (
+	TILE_WIDTH  = 32
+	TILE_HEIGHT = 32
+)
+
 type Tile struct {
 	X     float32
 	Y     float32

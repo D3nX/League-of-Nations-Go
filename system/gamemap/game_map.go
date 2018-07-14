@@ -119,7 +119,12 @@ func (gm *GameMap) Draw(cam *raylib.Camera2D) {
 	// Draw tiles
 	for x := range gm.Tiles {
 		for y := range gm.Tiles[x] {
-			gm.Tiles[x][y].Draw()
+			if gm.Tiles[x][y].X+TILE_WIDTH+cam.Offset.X >= 0 && gm.Tiles[x][y].Y+TILE_HEIGHT+cam.Offset.Y >= 0 {
+				if gm.Tiles[x][y].X+cam.Offset.X <= float32(raylib.GetScreenWidth()) &&
+					gm.Tiles[x][y].Y+cam.Offset.Y <= float32(raylib.GetScreenHeight()) {
+					gm.Tiles[x][y].Draw()
+				}
+			}
 		}
 	}
 	// End rendering camera

@@ -165,7 +165,7 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 
 		// UP button
 		t.ButtonRectangles["up"].X = (float32(raylib.GetScreenWidth()/2) + (t.Rectangle.Width-t.ButtonRectangles["up"].Width)/2) - t.Rectangle.Width/2
-		t.ButtonRectangles["up"].Y = (float32(raylib.GetScreenHeight()/2) - t.ButtonRectangles["up"].Height*2) - t.Rectangle.Height/2
+		t.ButtonRectangles["up"].Y = (float32(raylib.GetScreenHeight()/2) - t.ButtonRectangles["up"].Height*2) - t.Rectangle.Height/2 + 20
 		if raygui.Button(*t.ButtonRectangles["up"], "^") {
 			if int(t.Angle) != 180 {
 				t.AngleToGo = 180.0
@@ -176,7 +176,7 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 
 		// DOWN button
 		t.ButtonRectangles["down"].X = (float32(raylib.GetScreenWidth()/2) + (t.Rectangle.Width-t.ButtonRectangles["up"].Width)/2) - t.Rectangle.Width/2
-		t.ButtonRectangles["down"].Y = (float32(raylib.GetScreenHeight()/2) + t.Rectangle.Height + 44) - t.Rectangle.Height/2
+		t.ButtonRectangles["down"].Y = (float32(raylib.GetScreenHeight()/2) + t.Rectangle.Height + 44) - t.Rectangle.Height/2 - 35
 		if raygui.Button(*t.ButtonRectangles["down"], "v") {
 			if int(t.Angle) != 360 {
 				if t.Angle > 180 {

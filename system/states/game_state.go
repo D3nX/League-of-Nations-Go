@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DEBUG_UI    = true
+	DEBUG_UI    = false
 	DEBUG_MUSIC = true
 )
 
@@ -19,6 +19,7 @@ type GameState struct {
 	Map          *gamemap.GameMap
 	Music        map[string]raylib.Music
 	Camera       raylib.Camera2D
+	CameraTarget raylib.Vector2
 	panelButtons []ui.PanelButton
 }
 
@@ -39,9 +40,11 @@ func (state *GameState) Load() {
 		0.0,
 		1.0)
 
+	state.CameraTarget = raylib.NewVector2(0, 0)
+
 	// Initialize panel button
 	state.panelButtons = make([]ui.PanelButton, 1)
-	state.panelButtons[0] = ui.NewPanelButton(5, float32(raylib.GetScreenHeight())-195, 190, 190, "12000$", &objects.TankTextures[0])
+	state.panelButtons[0] = ui.NewPanelButton(5, float32(raylib.GetScreenHeight())-175, 170, 170, "12000$", &objects.TankTextures[0])
 }
 
 func (state *GameState) Update() {
@@ -93,6 +96,7 @@ func (state *GameState) Update() {
 
 	if raylib.IsKeyDown(raylib.KeyLeft) {
 		state.Camera.Offset.X += 5
+		state.CameraTarget.X += 5
 
 		if selectedId != -1 {
 			state.Map.Objects[selectedId].SetSelected(false)
@@ -102,6 +106,7 @@ func (state *GameState) Update() {
 
 	if raylib.IsKeyDown(raylib.KeyRight) {
 		state.Camera.Offset.X -= 5
+		state.CameraTarget.X -= 5
 
 		if selectedId != -1 {
 			state.Map.Objects[selectedId].SetSelected(false)
@@ -111,6 +116,7 @@ func (state *GameState) Update() {
 
 	if raylib.IsKeyDown(raylib.KeyUp) {
 		state.Camera.Offset.Y += 5
+		state.CameraTarget.Y += 5
 
 		if selectedId != -1 {
 			state.Map.Objects[selectedId].SetSelected(false)
@@ -120,6 +126,7 @@ func (state *GameState) Update() {
 
 	if raylib.IsKeyDown(raylib.KeyDown) {
 		state.Camera.Offset.Y -= 5
+		state.CameraTarget.Y -= 5
 
 		if selectedId != -1 {
 			state.Map.Objects[selectedId].SetSelected(false)
@@ -128,15 +135,43 @@ func (state *GameState) Update() {
 	}
 
 	if selectedId != -1 {
-		state.Camera.Offset = state.Map.Objects[selectedId].GetPosition()
+		state.CameraTarget = state.Map.Objects[selectedId].GetPosition()
 
-		state.Camera.Offset.X = -state.Camera.Offset.X
-		state.Camera.Offset.Y = -state.Camera.Offset.Y
+		state.CameraTarget.X = -state.CameraTarget.X
+		state.CameraTarget.Y = -state.CameraTarget.Y
 
-		state.Camera.Offset.X += float32(raylib.GetScreenWidth()) / 2
-		state.Camera.Offset.Y += float32(raylib.GetScreenHeight()) / 2
+		state.CameraTarget.X += float32(raylib.GetScreenWidth()) / 2
+		state.CameraTarget.Y += float32(raylib.GetScreenHeight()) / 2
 	}
 
+	if state.Camera.Offset.X > state.CameraTarget.X {
+		state.Camera.Offset.X += float32(float64(state.CameraTarget.X-state.Camera.Offset.X) * 0.1)
+
+		if state.Camera.Offset.X <= state.CameraTarget.X {
+			state.Camera.Offset.X = state.CameraTarget.X
+		}
+	} else if state.Camera.Offset.X < state.CameraTarget.X {
+		state.Camera.Offset.X += float32(float64(state.CameraTarget.X-state.Camera.Offset.X) * 0.1)
+
+		if state.Camera.Offset.X >= state.CameraTarget.X {
+			state.Camera.Offset.X = state.CameraTarget.X
+		}
+	}
+
+	if state.Camera.Offset.Y > state.CameraTarget.Y {
+		state.Camera.Offset.Y += float32(float64(state.CameraTarget.Y-state.Camera.Offset.Y) * 0.1)
+
+		if state.Camera.Offset.Y <= state.CameraTarget.Y {
+			state.Camera.Offset.Y = state.CameraTarget.Y
+		}
+	} else if state.Camera.Offset.Y < state.CameraTarget.Y {
+		state.Camera.Offset.Y += float32(float64(state.CameraTarget.Y-state.Camera.Offset.Y) * 0.1)
+
+		if state.Camera.Offset.Y >= state.CameraTarget.Y {
+			state.Camera.Offset.Y = state.CameraTarget.Y
+		}
+	}
+	
 	// Update the game map
 	state.Map.Update(&state.Camera)
 }
@@ -152,18 +187,36 @@ func (state *GameState) Draw() {
 
 	// The UI
 
-	// Drawing the panel
 	if DEBUG_UI {
+
+		// Drawing the panel title
+		text := "Army"
+
 		raylib.DrawRectangle(0,
 			raylib.GetScreenHeight()-200,
+			raylib.MeasureText(text, 15)+9,
+			23,
+			raylib.White)
+
+		raylib.DrawRectangleLines(3,
+			raylib.GetScreenHeight()-197,
+			raylib.MeasureText(text, 15)+3,
+			17,
+			raylib.Black)
+
+		raylib.DrawText(text, 5, raylib.GetScreenHeight()-196, 15, raylib.Black)
+
+		// Drawing the panel
+		raylib.DrawRectangle(0,
+			raylib.GetScreenHeight()-180,
 			raylib.GetScreenWidth(),
 			200,
 			raylib.White)
 
 		raylib.DrawRectangleLines(3,
-			raylib.GetScreenHeight()-197,
+			raylib.GetScreenHeight()-177,
 			raylib.GetScreenWidth()-6,
-			194,
+			174,
 			raylib.Black)
 
 		// Draw the panel buttons
