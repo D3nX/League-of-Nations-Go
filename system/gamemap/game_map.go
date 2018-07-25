@@ -104,13 +104,7 @@ func (gm *GameMap) Load(path string) {
 
 }
 
-func (gm *GameMap) Update(cam *raylib.Camera2D) {
-	for _, object := range gm.Objects {
-		object.Update(cam)
-	}
-}
-
-func (gm *GameMap) Draw(cam *raylib.Camera2D) {
+func (gm *GameMap) Draw(cam *raylib.Camera2D, function func(int, *objects.Object)) {
 
 	// fmt.Println(cam.Target)
 
@@ -130,7 +124,34 @@ func (gm *GameMap) Draw(cam *raylib.Camera2D) {
 	// End rendering camera
 	raylib.EndMode2D()
 
-	for _, object := range gm.Objects {
-		object.Draw(cam)
+	for i, object := range gm.Objects {
+		function(i, &object)
+		// object.Draw(cam)
 	}
+}
+
+func (gm *GameMap) AddObject(object objects.Object) {
+	gm.Objects = append(gm.Objects, object)
+}
+
+func (gm GameMap) IsObjectAt(x, y float32) bool {
+	for _, object := range gm.Objects {
+		if object.GetPosition().X == x && object.GetPosition().Y == y {
+			return true
+		}
+	}
+	return false
+}
+
+func (gm GameMap) GetTile(x, y int32) *Tile {
+	mouseX := int(float32(x / TILE_WIDTH))
+	mouseY := int(float32(y / TILE_HEIGHT))
+
+	if mouseX < len(gm.Tiles) && mouseX >= 0 {
+		if mouseY < len(gm.Tiles[mouseX]) && mouseY >= 0 {
+			return &gm.Tiles[mouseX][mouseY]
+		}
+	}
+
+	return nil
 }

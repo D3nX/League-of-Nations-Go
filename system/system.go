@@ -24,7 +24,7 @@ var Logos []*raylib.Image
 var Anthems []raylib.Music
 var Screenshot raylib.Texture2D
 
-// Gloabal and current gmae variables
+// Global and current game variables
 var CurrentFlag raylib.Texture2D
 
 // Global functions

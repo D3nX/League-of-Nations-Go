@@ -12,9 +12,7 @@ type Building struct {
 	Y    float32
 }
 
-func (b *Building) Update(cam *raylib.Camera2D) {
-
-}
+func (b *Building) Update(cam *raylib.Camera2D, pickable bool) {}
 
 func (b *Building) Draw(cam *raylib.Camera2D) {
 	// Begin rendering camera
@@ -29,10 +27,14 @@ func (b *Building) IsSelected() bool {
 	return false
 }
 
-func (t *Building) SetSelected(selected bool) {
+func (b *Building) SetSelected(selected bool) {}
 
+func (b *Building) GetPosition() raylib.Vector2 {
+	return raylib.NewVector2(b.X, b.Y)
 }
 
-func (t *Building) GetPosition() raylib.Vector2 {
-	return raylib.NewVector2(t.X, t.Y)
+func (b *Building) Collides(rect raylib.Rectangle) bool {
+	return false
 }
+
+func (b *Building) InputReceived() bool { return false }

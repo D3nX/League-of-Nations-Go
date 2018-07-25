@@ -20,47 +20,53 @@ type Tank struct {
 
 	Direction string
 
-	Selected bool
-
 	ButtonRectangles map[string]*raylib.Rectangle
 
 	Rectangle raylib.Rectangle
+
+	Selected      bool
+	buttonPressed bool
 }
 
-func (t *Tank) Update(cam *raylib.Camera2D) {
-	if raylib.IsMouseButtonPressed(raylib.MouseLeftButton) {
+func (t *Tank) Update(cam *raylib.Camera2D, pickable bool) {
 
-		mPos := raylib.GetMousePosition()
+	if pickable {
 
-		mPos.X -= cam.Offset.X
-		mPos.Y -= cam.Offset.Y
+		if raylib.IsMouseButtonPressed(raylib.MouseLeftButton) {
 
-		if mPos.X >= t.Rectangle.X && mPos.X <= t.Rectangle.X+t.Rectangle.Width {
-			if mPos.Y >= t.Rectangle.Y && mPos.Y <= t.Rectangle.Y+t.Rectangle.Height {
-				if t.Selected {
-					t.Selected = false
-				} else {
-					t.Selected = true
+			mPos := raylib.GetMousePosition()
+
+			mPos.X -= cam.Offset.X
+			mPos.Y -= cam.Offset.Y
+
+			if mPos.X >= t.Rectangle.X && mPos.X <= t.Rectangle.X+t.Rectangle.Width {
+				if mPos.Y >= t.Rectangle.Y && mPos.Y <= t.Rectangle.Y+t.Rectangle.Height {
+					if t.Selected {
+						t.Selected = false
+					} else {
+						t.Selected = true
+					}
+					goto end
 				}
-				goto end
 			}
-		}
 
-		mPos = raylib.GetMousePosition()
+			mPos = raylib.GetMousePosition()
 
-		if t.Selected {
-			for _, c := range t.ButtonRectangles {
-				if mPos.X >= c.X && mPos.X <= c.X+c.Width {
-					if mPos.Y >= c.Y && mPos.Y <= c.Y+c.Height {
-						goto end
+			if t.Selected {
+				for _, c := range t.ButtonRectangles {
+					if mPos.X >= c.X && mPos.X <= c.X+c.Width {
+						if mPos.Y >= c.Y && mPos.Y <= c.Y+c.Height {
+							goto end
+						}
 					}
 				}
+
+				t.Selected = false
 			}
 
-			t.Selected = false
+		end:
 		}
 
-	end:
 	}
 
 	// Angle manipulations
@@ -120,6 +126,8 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 	1.0,
 	raylib.White)*/
 
+	t.buttonPressed = false
+
 	if t.Selected {
 		// Begin rendering camera
 		raylib.BeginMode2D(*cam)
@@ -141,6 +149,7 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 		t.ButtonRectangles["right"].X = (float32(float32(raylib.GetScreenWidth()/2) + t.Rectangle.Width + 20)) - t.Rectangle.Width/2
 		t.ButtonRectangles["right"].Y = (float32(raylib.GetScreenHeight()/2) + (t.Rectangle.Height-t.ButtonRectangles["right"].Height)/2) - t.Rectangle.Height/2
 		if raygui.Button(*t.ButtonRectangles["right"], ">") {
+			t.buttonPressed = true
 			if int(t.Angle) != 270 {
 				if t.Angle > 90.0 {
 					t.AngleToGo = 270
@@ -156,6 +165,7 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 		t.ButtonRectangles["left"].X = (float32(raylib.GetScreenWidth()/2) - t.ButtonRectangles["left"].Width*2) - t.Rectangle.Width/2
 		t.ButtonRectangles["left"].Y = (float32(raylib.GetScreenHeight()/2) + (t.Rectangle.Height-t.ButtonRectangles["left"].Height)/2) - t.Rectangle.Height/2
 		if raygui.Button(*t.ButtonRectangles["left"], "<") {
+			t.buttonPressed = true
 			if int(t.Angle) != 90 {
 				t.AngleToGo = 90.0
 			}
@@ -167,6 +177,7 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 		t.ButtonRectangles["up"].X = (float32(raylib.GetScreenWidth()/2) + (t.Rectangle.Width-t.ButtonRectangles["up"].Width)/2) - t.Rectangle.Width/2
 		t.ButtonRectangles["up"].Y = (float32(raylib.GetScreenHeight()/2) - t.ButtonRectangles["up"].Height*2) - t.Rectangle.Height/2 + 20
 		if raygui.Button(*t.ButtonRectangles["up"], "^") {
+			t.buttonPressed = true
 			if int(t.Angle) != 180 {
 				t.AngleToGo = 180.0
 			}
@@ -178,6 +189,7 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 		t.ButtonRectangles["down"].X = (float32(raylib.GetScreenWidth()/2) + (t.Rectangle.Width-t.ButtonRectangles["up"].Width)/2) - t.Rectangle.Width/2
 		t.ButtonRectangles["down"].Y = (float32(raylib.GetScreenHeight()/2) + t.Rectangle.Height + 44) - t.Rectangle.Height/2 - 35
 		if raygui.Button(*t.ButtonRectangles["down"], "v") {
+			t.buttonPressed = true
 			if int(t.Angle) != 360 {
 				if t.Angle > 180 {
 					t.AngleToGo = 360.0
@@ -239,4 +251,18 @@ func (t *Tank) SetSelected(selected bool) {
 
 func (t *Tank) GetPosition() raylib.Vector2 {
 	return raylib.NewVector2(t.X, t.Y)
+}
+
+func (t *Tank) Collides(rect raylib.Rectangle) bool {
+
+	if raylib.CheckCollisionRecs(rect, t.Rectangle) {
+		return true
+	}
+
+	return false
+
+}
+
+func (t *Tank) InputReceived() bool {
+	return t.buttonPressed
 }

@@ -9,6 +9,7 @@ type PanelButton struct {
 	Rectangle raylib.Rectangle
 	Text      string
 	Texture   *raylib.Texture2D
+	Pressed   bool
 }
 
 func (pb PanelButton) Draw() bool {
