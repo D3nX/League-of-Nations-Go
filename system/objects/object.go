@@ -9,5 +9,6 @@ type Object interface {
 	SetSelected(bool)
 	GetPosition() raylib.Vector2
 	Collides(raylib.Rectangle) bool
-	InputReceived() bool
+	StopMoving(string)
+	CanMove() bool
 }

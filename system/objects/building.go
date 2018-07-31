@@ -10,6 +10,8 @@ type Building struct {
 	Type int
 	X    float32
 	Y    float32
+
+	Rectangle raylib.Rectangle
 }
 
 func (b *Building) Update(cam *raylib.Camera2D, pickable bool) {}
@@ -37,4 +39,8 @@ func (b *Building) Collides(rect raylib.Rectangle) bool {
 	return false
 }
 
-func (b *Building) InputReceived() bool { return false }
+func (b *Building) StopMoving(direction string) {}
+
+func (b Building) CanMove() bool {
+	return false
+}

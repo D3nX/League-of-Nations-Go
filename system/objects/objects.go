@@ -26,6 +26,7 @@ func NewBuilding(buildingType int, x, y float32) *Building {
 	building.X = x
 	building.Y = y
 	building.Type = buildingType
+	building.Rectangle = raylib.NewRectangle(x, y+float32(BuildingTextures[buildingType].Height)-84, 192, 84)
 
 	return building
 }
@@ -35,6 +36,7 @@ func NewTank(tankType int, x, y, angle float32) *Tank {
 
 	tank.X = x
 	tank.Y = y
+	tank.Speed = 1.0
 	tank.Angle = angle
 	tank.Type = tankType
 	tank.Selected = false

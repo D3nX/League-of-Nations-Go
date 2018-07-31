@@ -11,7 +11,7 @@ import (
 
 const (
 	DEBUG_UI    = true
-	DEBUG_MUSIC = false
+	DEBUG_MUSIC = true
 )
 
 type GameState struct {
@@ -98,17 +98,144 @@ func (state *GameState) Update() {
 	// Iterate over objects
 	state.selectedId = -1
 	for i, obj := range state.Map.Objects {
+		// Check which object is selected
 		if obj.IsSelected() {
 			state.selectedId = i
 		}
 	}
 
+	// Update the current object and disable the other
 	if state.selectedId != -1 {
+
+		switch state.Map.Objects[state.selectedId].(type) {
+		case *objects.Tank:
+			state.Map.Objects[state.selectedId].(*objects.Tank).CanRotateVertical = true
+			state.Map.Objects[state.selectedId].(*objects.Tank).CanRotateHorizontal = true
+			state.Map.Objects[state.selectedId].(*objects.Tank).CanRotate = true
+		}
+
+		tank := state.Map.Objects[state.selectedId].(*objects.Tank)
+
 		for i, obj := range state.Map.Objects {
 			if i != state.selectedId {
 				obj.SetSelected(false)
+
+				// Check if we can rotate relatively to the player
+				switch state.Map.Objects[state.selectedId].(type) {
+				case *objects.Tank:
+
+					switch obj.(type) {
+					case *objects.Tank:
+						/*if tank.Angle ==  {
+							if objects.TankCollidesRotation(tank, obj.(*objects.Tank)) {
+								tank.CanRotateHorizontal = false
+							}
+						} else if tank.Direction == "right" || tank.Direction == "left" {
+							if objects.TankCollidesRotation(tank, obj.(*objects.Tank)) {
+								tank.CanRotateVertical = false
+							}
+						}*/
+						switch int(tank.Angle) {
+						case 0:
+							fallthrough
+						case 180:
+							fallthrough
+						case -180:
+							if objects.TankCollidesRotation(tank, obj.(*objects.Tank)) {
+								tank.CanRotateHorizontal = false
+								tank.CanRotate = false
+							}
+						case 90:
+							fallthrough
+						case -90:
+							fallthrough
+						case 270:
+							if objects.TankCollidesRotation(tank, obj.(*objects.Tank)) {
+								tank.CanRotateVertical = false
+								tank.CanRotate = false
+							}
+						}
+					}
+				}
+
 			}
 		}
+	}
+
+	// Check collision between each tank
+	for coi, currentObject := range state.Map.Objects {
+
+		switch currentObject.(type) {
+		case *objects.Tank:
+
+			state.Map.Objects[coi].(*objects.Tank).CanRotateVertical = true
+			state.Map.Objects[coi].(*objects.Tank).CanRotateHorizontal = true
+			state.Map.Objects[coi].(*objects.Tank).CanRotate = true
+
+			for oi, object := range state.Map.Objects {
+				switch object.(type) {
+				case *objects.Tank:
+					if coi != oi {
+						if objects.TankWillCollides(object.(*objects.Tank), currentObject.(*objects.Tank), 20) &&
+							currentObject.(*objects.Tank).Direction != object.(*objects.Tank).Direction {
+							currentObject.StopMoving("")
+							continue
+						}
+
+						// Check if we can rotate relatively to other tanks
+						switch int(state.Map.Objects[coi].(*objects.Tank).Angle) {
+						case 0:
+							fallthrough
+						case 180:
+							fallthrough
+						case -180:
+							if objects.TankCollidesRotation(state.Map.Objects[coi].(*objects.Tank), object.(*objects.Tank)) {
+								state.Map.Objects[coi].(*objects.Tank).CanRotateHorizontal = false
+								state.Map.Objects[coi].(*objects.Tank).CanRotate = false
+							}
+						case 90:
+							fallthrough
+						case -90:
+							fallthrough
+						case 270:
+							if objects.TankCollidesRotation(state.Map.Objects[coi].(*objects.Tank), object.(*objects.Tank)) {
+								state.Map.Objects[coi].(*objects.Tank).CanRotateVertical = false
+								state.Map.Objects[coi].(*objects.Tank).CanRotate = false
+							}
+						}
+					}
+
+				case *objects.Building:
+					if currentObject.(*objects.Tank).Collides(object.(*objects.Building).Rectangle) {
+						currentObject.StopMoving("")
+						continue
+					}
+
+					// Check if we can rotate relatively to other buildings
+					switch int(state.Map.Objects[coi].(*objects.Tank).Angle) {
+					case 0:
+						fallthrough
+					case 180:
+						fallthrough
+					case -180:
+						if objects.TankCollidesRotationRec(state.Map.Objects[coi].(*objects.Tank), object.(*objects.Building).Rectangle) {
+							state.Map.Objects[coi].(*objects.Tank).CanRotateHorizontal = false
+							state.Map.Objects[coi].(*objects.Tank).CanRotate = false
+						}
+					case 90:
+						fallthrough
+					case -90:
+						fallthrough
+					case 270:
+						if objects.TankCollidesRotationRec(state.Map.Objects[coi].(*objects.Tank), object.(*objects.Building).Rectangle) {
+							state.Map.Objects[coi].(*objects.Tank).CanRotateVertical = false
+							state.Map.Objects[coi].(*objects.Tank).CanRotate = false
+						}
+					}
+				}
+			}
+		}
+
 	}
 
 	// Move camera depending mouse position
