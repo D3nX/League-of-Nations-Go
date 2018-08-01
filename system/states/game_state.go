@@ -177,7 +177,8 @@ func (state *GameState) Update() {
 				case *objects.Tank:
 					if coi != oi {
 						if objects.TankWillCollides(object.(*objects.Tank), currentObject.(*objects.Tank), 20) &&
-							currentObject.(*objects.Tank).Direction != object.(*objects.Tank).Direction {
+							(currentObject.(*objects.Tank).Direction != object.(*objects.Tank).Direction ||
+								!currentObject.(*objects.Tank).TankCanMove || !object.(*objects.Tank).TankCanMove) {
 							currentObject.StopMoving("")
 							continue
 						}

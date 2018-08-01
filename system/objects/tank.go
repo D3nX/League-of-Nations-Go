@@ -30,7 +30,7 @@ type Tank struct {
 
 	Selected      bool
 	buttonPressed bool
-	canMove       bool
+	TankCanMove   bool
 	Rotating      bool
 }
 
@@ -110,7 +110,7 @@ func (t *Tank) Update(cam *raylib.Camera2D, pickable bool) {
 	}
 
 	// Move if needed
-	if t.canMove {
+	if t.TankCanMove {
 		if int(t.AngleToGo) == -1 || !t.CanRotate {
 			switch t.Direction {
 			case "right":
@@ -132,7 +132,7 @@ func (t *Tank) Update(cam *raylib.Camera2D, pickable bool) {
 	t.UpdateRectanglePosition()
 
 	// Enable moving
-	t.canMove = true
+	t.TankCanMove = true
 }
 
 func (t *Tank) Draw(cam *raylib.Camera2D) {
@@ -176,8 +176,10 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 					}
 				}
 
-				t.X += 1
-				t.Direction = "right"
+				if t.Direction != "right" {
+					t.X += 1
+					t.Direction = "right"
+				}
 			}
 		}
 
@@ -192,8 +194,10 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 					t.AngleToGo = 90.0
 				}
 
-				t.X -= 1
-				t.Direction = "left"
+				if t.Direction != "left" {
+					t.X -= 1
+					t.Direction = "left"
+				}
 			}
 		}
 
@@ -208,8 +212,10 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 					t.AngleToGo = 180.0
 				}
 
-				t.Y -= 1
-				t.Direction = "up"
+				if t.Direction != "up" {
+					t.Y -= 1
+					t.Direction = "up"
+				}
 			}
 		}
 
@@ -228,8 +234,10 @@ func (t *Tank) Draw(cam *raylib.Camera2D) {
 					}
 				}
 
-				t.Y += 1
-				t.Direction = "down"
+				if t.Direction != "down" {
+					t.Y += 1
+					t.Direction = "down"
+				}
 			}
 		}
 	} else {
@@ -300,11 +308,11 @@ func (t *Tank) StopMoving(direction string) {
 	/*if t.Direction == direction {
 		t.Direction = ""
 	}*/
-	t.canMove = false
+	t.TankCanMove = false
 }
 
 func (t Tank) CanMove() bool {
-	return t.canMove
+	return t.TankCanMove
 }
 
 func TankCollides(t1, t2 *Tank) bool {
