@@ -1,6 +1,6 @@
 # League of Nations - Golang / Raylib
 
-A great conquest game in golang / raylib.
+A conquest / RTS game in golang / raylib.
 
 # Warning
 
